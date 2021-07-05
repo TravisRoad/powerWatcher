@@ -38,8 +38,6 @@ jobs:
           content: ${{ secrets.settings }}
         run: |
           echo "$content" > settings.json
-          cat settings.json
-          echo $content
 
-      # - name: run
-      #   run: python main.py settings.json
+      - name: run
+        run: python main.py settings.json
