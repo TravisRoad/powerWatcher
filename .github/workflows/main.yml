@@ -37,9 +37,9 @@ jobs:
         env:
           content: ${{ secrets.settings }}
         run: |
-          # echo "$env:content" > settings.json
-          # cat settings.json
-          echo $env:content
+          echo "$content" > settings.json
+          cat settings.json
+          echo $content
 
       # - name: run
       #   run: python main.py settings.json
