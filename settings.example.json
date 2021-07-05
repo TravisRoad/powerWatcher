@@ -1,0 +1,16 @@
+{
+  "username": "2010211345",
+  "password": "123456",
+  "partmentName": "学一楼",
+  "areaid": 1,
+  "floor": 1,
+  "dorm": "202",
+  "mail": {
+    "sender": "xxx@163.com",
+    "receivers": ["xxx@qq.com", "xxx@163.com"],
+    "host": "smtp.163.com",
+    "user": "randomxxx1234",
+    "passwd": "passwd",
+    "port": 25
+  }
+}
