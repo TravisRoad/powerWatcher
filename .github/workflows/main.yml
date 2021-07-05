@@ -37,7 +37,7 @@ jobs:
         env:
           content: ${{ secrets.settings }}
         run: |
-          echo '$env:content' > settings.json
+          echo "$env:content" > settings.json
           cat settings.json
 
       - name: run
