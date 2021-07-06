@@ -42,6 +42,7 @@ jobs:
       - name: run
         env:
           sk: ${{ secrets.sk }}
+          id: ${{ secrets.id}}
         run: |
           python main.py settings.json > out
-          curl -k -d chat_id="-424806019" -d "text=$(cat out)" https://api.telegram.org/bot$(sk)/sendMessage
+          curl -k -d chat_id="$id" -d "text=$(cat out)" https://api.telegram.org/bot$sk/sendMessage
