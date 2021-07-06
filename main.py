@@ -146,8 +146,8 @@ def main(url='settings.json'):
         for k in ['time', 'surplus', 'phone', 'freeEnd']:
             content += '{:>12}{}\n'.format(k+': ', d[k])
         print(content)
-        # 小于 10 告警
-        if d['surplus'] < 10:
+        # 小于 20 告警
+        if d['surplus'] < 20:
             send_mail(content, p['mail'])
     else:
         print('fetch fail')
