@@ -1,7 +1,6 @@
 name: main action
 
 on:
-  push:
   schedule:
     - cron: "0 */24 * * *"
 

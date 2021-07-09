@@ -6,7 +6,7 @@ p = properties().content
 bot = telebot.TeleBot(p['botkey'])
 
 
-@bot.message_handler(commands=['power', 'help'])
+@bot.message_handler(commands=['power'])
 def send_welcome(message):
     bot.reply_to(message, '查询中')
     d, content = get_power_info()
