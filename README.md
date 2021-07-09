@@ -1,7 +1,7 @@
-# :dart: 寝室电量告警
+# BUPT 寝室电量告警
 
-- 采用邮箱通知的方式，剩余电量小于 20 度时告警
-- 在tg机器人提供电量查询功能
+- :dart:采用邮箱通知的方式，剩余电量小于 20 度时告警
+- :dart:在 tg 机器人提供电量查询功能
 
 ## :rocket: quick start
 
@@ -18,12 +18,12 @@
 
    ```json
    {
-     "username": "2010211345",
-     "password": "123456",
+     "username": "2010211345", // 学号
+     "password": "123456", // 密码
      "partmentName": "学一楼",
-     "areaid": 1,
-     "floor": 1,
-     "dorm": "202",
+     "areaid": 1, // 1 是西土城， 0是沙河
+     "floor": 1, // 楼层
+     "dorm": "202", // 房间号
      "mail": {
        "sender": "xxx@163.com",
        "receivers": ["xxx@qq.com", "xxx@163.com"],
@@ -32,7 +32,7 @@
        "passwd": "passwd",
        "port": 25
      },
-     "botkey": "xxx"
+     "botkey": "xxx" // tg bot key
    }
    ```
 
@@ -40,7 +40,13 @@
 
    ```shell
    cp settings.example.json settings.json
+
+   # 修改settings.json
    python main.py settings.json
+
+   # tg bot
+   screen -S tgbot
+   python bot.py
 
    # add crontab
    crontab -e
