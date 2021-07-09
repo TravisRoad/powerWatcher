@@ -97,11 +97,11 @@ class Query:
             return(True, s['d']['data'])
 
 
-class properies:
+class properties:
     def __init__(self, url='settings.json'):
-        self.read_file(url)
+        self.__read_file(url)
 
-    def read_file(self, url: str):
+    def __read_file(self, url: str):
         with open(url, 'r', encoding='utf-8') as f:
             p = json.load(f)
             self.content = p
@@ -116,8 +116,6 @@ def send_mail(content: str, mail_config: dict):
     sender = mail_config['sender']
     receivers = mail_config['receivers']  # 接收邮件，可设置为你的QQ邮箱或者其他邮箱
 
-    content = "<html><body><h1 align=\"center\">费用不足</h1><p>" + \
-        content + "</p></body></html>"
     message = MIMEText(content, 'html', 'utf-8')
     message['From'] = Header("电费查询", 'utf-8')
 
@@ -134,8 +132,8 @@ def send_mail(content: str, mail_config: dict):
         print("Error: 无法发送邮件")
 
 
-def main(url='settings.json'):
-    p = properies(url=url).content
+def get_power_info(url='settings.json'):
+    p = properties(url=url).content
     ret = login(p['username'], p['password'])
     s = getHeader(ret.headers)
     q = Query(s).part(p["areaid"], p['partmentName']).floor(
@@ -146,11 +144,17 @@ def main(url='settings.json'):
         for k in ['time', 'surplus', 'phone', 'freeEnd']:
             content += '{:>12}{}\n'.format(k+': ', d[k])
         print(content)
-        # 小于 20 告警
-        if d['surplus'] < 20:
-            send_mail(content, p['mail'])
     else:
-        print('fetch fail')
+        d = {'surplus': 30}
+        print('failed to fetch')
+    return d, content
+
+
+def main(url='settings.json'):
+    p = properties(url=url).content
+    d, content = get_power_info(url)
+    if d['surplus'] > 20:
+        send_mail(content, p['mail'])
 
 
 if __name__ == '__main__':
