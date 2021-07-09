@@ -16,14 +16,25 @@
 
    如下[settings.example.json](settings.example.json)
 
+   |         变量 | 备注                   |
+   | -----------: | :--------------------- |
+   |     username | 学号                   |
+   |     password | 密码                   |
+   | partmentName | 宿舍楼名称             |
+   |       areaid | 1 是西土城<br>0 是沙河 |
+   |        floor | 楼层                   |
+   |         dorm | 房间号                 |
+   |         mail | 参考邮箱配置           |
+   |       botkey | tg 机器人 apikey       |
+
    ```json
    {
-     "username": "2010211345", // 学号
-     "password": "123456", // 密码
+     "username": "2010211345",
+     "password": "123456",
      "partmentName": "学一楼",
-     "areaid": 1, // 1 是西土城， 0是沙河
-     "floor": 1, // 楼层
-     "dorm": "202", // 房间号
+     "areaid": 1,
+     "floor": 1,
+     "dorm": "202",
      "mail": {
        "sender": "xxx@163.com",
        "receivers": ["xxx@qq.com", "xxx@163.com"],
@@ -32,7 +43,7 @@
        "passwd": "passwd",
        "port": 25
      },
-     "botkey": "xxx" // tg bot key
+     "botkey": "xxx"
    }
    ```
 
