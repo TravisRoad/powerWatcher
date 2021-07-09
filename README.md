@@ -30,7 +30,8 @@
        "user": "randomxxx1234",
        "passwd": "passwd",
        "port": 25
-     }
+     },
+     "botkey": "xxx"
    }
    ```
 
@@ -42,5 +43,5 @@
 
    # add crontab
    crontab -e
-   * */1 * * * python main.py settings.json
+   0 */1 * * * python main.py settings.json
    ```

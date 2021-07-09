@@ -153,7 +153,7 @@ def get_power_info(url='settings.json'):
 def main(url='settings.json'):
     p = properties(url=url).content
     d, content = get_power_info(url)
-    if d['surplus'] > 20:
+    if d['surplus'] < 20:
         send_mail(content, p['mail'])
 
 

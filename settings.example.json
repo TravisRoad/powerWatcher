@@ -12,5 +12,6 @@
     "user": "randomxxx1234",
     "passwd": "passwd",
     "port": 25
-  }
+  },
+  "botkey": "xxxxx"
 }
