@@ -63,7 +63,6 @@ class Query:
         self.areaid = areaid
         ret = requests.post(
             'https://app.bupt.edu.cn/buptdf/wap/default/part', data={'areaid': areaid}, headers=self.headers)
-        # s = json.loads(ret.content)
         s = json.loads(ret.text)
         a = s['d']['data']
         for item in a:
@@ -78,7 +77,7 @@ class Query:
         return self
 
     def dorm(self, dorm: str):
-        self.dorm = str(self.floor) + '-' + dorm
+        self.dorm = dorm
         return self
 
     def search(self) -> (bool, dict):
@@ -117,7 +116,8 @@ def send_mail(content: str, mail_config: dict):
     receivers = mail_config['receivers']  # 接收邮件，可设置为你的QQ邮箱或者其他邮箱
 
     message = MIMEText(content, 'html', 'utf-8')
-    message['From'] = Header("电费查询", 'utf-8')
+    message['From'] = "电费查询"+'<'+str(sender)+'>'
+    message['To'] = ",".join(receivers)
 
     subject = '电费不够啦！'
     message['Subject'] = Header(subject, 'utf-8')
@@ -128,8 +128,9 @@ def send_mail(content: str, mail_config: dict):
         smtpObj.login(mail_user, mail_pass)
         smtpObj.sendmail(sender, receivers, message.as_string())
         print("邮件发送成功")
-    except smtplib.SMTPException:
+    except smtplib.SMTPException as e:
         print("Error: 无法发送邮件")
+        print(e)
 
 
 def get_power_info(url='settings.json'):
@@ -145,7 +146,7 @@ def get_power_info(url='settings.json'):
             content += '{:>12}{}\n'.format(k+': ', d[k])
         print(content)
     else:
-        d = {'surplus': 30}
+        d = {'surplus': 30}  # 这里挺蠢的，其实只要大于20就好了，这个30随意定的
         print('failed to fetch')
     return d, content
 
@@ -153,7 +154,7 @@ def get_power_info(url='settings.json'):
 def main(url='settings.json'):
     p = properties(url=url).content
     d, content = get_power_info(url)
-    if d['surplus'] < 20:
+    if d['surplus'] < 10:
         send_mail(content, p['mail'])
 
 

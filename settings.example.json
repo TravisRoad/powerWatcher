@@ -4,7 +4,7 @@
   "partmentName": "学一楼",
   "areaid": 1,
   "floor": 1,
-  "dorm": "202",
+  "dorm": "1-202",
   "mail": {
     "sender": "xxx@163.com",
     "receivers": ["xxx@qq.com", "xxx@163.com"],

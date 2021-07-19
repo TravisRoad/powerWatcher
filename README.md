@@ -16,16 +16,16 @@
 
    如下[settings.example.json](settings.example.json)
 
-   |         变量 | 备注                   |
-   | -----------: | :--------------------- |
-   |     username | 学号                   |
-   |     password | 密码                   |
-   | partmentName | 宿舍楼名称             |
-   |       areaid | 1 是西土城<br>0 是沙河 |
-   |        floor | 楼层                   |
-   |         dorm | 房间号                 |
-   |         mail | 参考邮箱配置           |
-   |       botkey | tg 机器人 apikey       |
+   |         变量 | 备注                         |
+   | -----------: | :--------------------------- |
+   |     username | 学号                         |
+   |     password | 密码                         |
+   | partmentName | 宿舍楼名称                   |
+   |       areaid | 1 是西土城<br>0 是沙河       |
+   |        floor | 楼层                         |
+   |         dorm | 房间号 格式为「楼号+寝室号」 |
+   |         mail | 参考邮箱配置                 |
+   |       botkey | tg 机器人 apikey             |
 
    ```json
    {
@@ -34,7 +34,7 @@
      "partmentName": "学一楼",
      "areaid": 1,
      "floor": 1,
-     "dorm": "202",
+     "dorm": "1-202",
      "mail": {
        "sender": "xxx@163.com",
        "receivers": ["xxx@qq.com", "xxx@163.com"],
