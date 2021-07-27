@@ -1,5 +1,7 @@
 # BUPT 寝室电量告警
 
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/github.com/TravisRoad/powerWatcher)
+
 - :dart:采用邮箱通知的方式，剩余电量小于 20 度时告警
 - :dart:在 tg 机器人提供电量查询功能
 
