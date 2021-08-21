@@ -65,3 +65,6 @@
    crontab -e
    0 */1 * * * python main.py settings.json
    ```
+
+4. 用`github action`向 tg 发消息
+   > 首先你需要一个 bot，获取到你的`id`，把 bot 的`secret key`和你的`id`填入仓库的 secrets 里面，分别命名为`sk`和`id`。然后就可以快乐的使用`github action`了
