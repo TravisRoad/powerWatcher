@@ -139,9 +139,9 @@ def get_power_info(url='settings.json'):
     s = getHeader(ret.headers)
     q = Query(s).part(p["areaid"], p['partmentName']).floor(
         p['floor']).dorm(p['dorm']).search()
+    content = ''
     if q[0]:
         d = q[-1]
-        content = ''
         for k in ['time', 'surplus', 'phone', 'freeEnd']:
             content += '{:>12}{}\n'.format(k+': ', d[k])
         print(content)
@@ -153,9 +153,9 @@ def get_power_info(url='settings.json'):
 
 def main(url='settings.json'):
     p = properties(url=url).content
-    d, content = get_power_info(url)
+    d, c = get_power_info(url)
     if d['surplus'] < 10:
-        send_mail(content, p['mail'])
+        send_mail(c, p['mail'])
 
 
 if __name__ == '__main__':
