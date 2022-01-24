@@ -1,8 +1,8 @@
 name: send msg to tg
 
 on:
-  schedule:
-    - cron: "0 12 */1 * *"
+#   schedule:
+#     - cron: "0 12 */1 * *"
 
   workflow_dispatch:
 
