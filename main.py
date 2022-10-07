@@ -141,9 +141,10 @@ def main(url='settings.json'):
 
     isLoginSuccess = login(session, props["username"], props["password"])
     if isLoginSuccess:
-        print(props["username"], "login success")
+        pass
+        # print(props["username"], "login success")
     else:
-        print(props["username"], "login failed")
+        # print(props["username"], "login failed")
         return
 
     session.get('https://app.bupt.edu.cn/buptdf/wap/default/chong')
@@ -157,7 +158,7 @@ def main(url='settings.json'):
         print('partmentName error')
         return
     partmentId = ret[0]['partmentId']
-    print(partmentId)
+    # print(partmentId)
 
     ret = session.post('https://app.bupt.edu.cn/buptdf/wap/default/search',
                        data={
