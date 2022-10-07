@@ -8,49 +8,8 @@ from email.header import Header
 import sys
 
 
-def toheader() -> dict:
-    rawheaders = '''Accept: application/json, text/javascript, */*; q=0.01
-            Accept-Encoding: gzip, deflate, br
-            Accept-Language: zh-CN,zh;q=0.9,en-GB;q=0.8,en;q=0.7
-            Cache-Control: no-cache
-            Connection: keep-alive
-            Content-Length: 8
-            Content-Type: application/x-www-form-urlencoded; charset=UTF-8
-            Host: app.bupt.edu.cn
-            Origin: https://app.bupt.edu.cn
-            Pragma: no-cache
-            Referer: https://app.bupt.edu.cn/buptdf/wap/default/chong
-            sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
-            sec-ch-ua-mobile: ?0
-            Sec-Fetch-Dest: empty
-            Sec-Fetch-Mode: cors
-            Sec-Fetch-Site: same-origin
-            User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36
-            X-Requested-With: XMLHttpRequest'''
-    headers = dict([[h.strip().partition(':')[0], h.strip().partition(':')[2][1:]]
-                    for h in rawheaders.split('\n')])
-    return headers
-
-
-def login(userName: str, passWord: str) -> requests.Response:
-    return requests.post(url="https://app.bupt.edu.cn/uc/wap/login/check",
-                         data={"username": userName, "password": passWord},
-                         headers=toheader())
-
-
-def getHeader(return_headers: dict) -> dict:
-    cookie = {}
-    cookie_ret = return_headers['Set-Cookie']
-    s1 = re.search(
-        r'UUkey=[0-9A-Za-z]+;', cookie_ret).group()
-    s2 = re.search(r'eai-sess=[0-9A-Za-z]+;',
-                   cookie_ret).group()
-    headers = toheader()
-    headers['Cookie'] = s1+s2[:-1]
-    return headers
-
-
 class Query:
+
     def __init__(self, headers: dict):
         self.headers = headers
         self.data = {}
@@ -61,8 +20,9 @@ class Query:
 
     def part(self, areaid: int, partmentName: str):
         self.areaid = areaid
-        ret = requests.post(
-            'https://app.bupt.edu.cn/buptdf/wap/default/part', data={'areaid': areaid}, headers=self.headers)
+        ret = requests.post('https://app.bupt.edu.cn/buptdf/wap/default/part',
+                            data={'areaid': areaid},
+                            headers=self.headers)
         s = json.loads(ret.text)
         a = s['d']['data']
         for item in a:
@@ -88,15 +48,18 @@ class Query:
             'areaid': self.areaid
         }
         ret = requests.post(
-            'https://app.bupt.edu.cn/buptdf/wap/default/search', data=data, headers=self.headers)
+            'https://app.bupt.edu.cn/buptdf/wap/default/search',
+            data=data,
+            headers=self.headers)
         s = json.loads(ret.text)
         if '成功' not in s['m']:
             return (False, None)
         else:
-            return(True, s['d']['data'])
+            return (True, s['d']['data'])
 
 
 class properties:
+
     def __init__(self, url='settings.json'):
         self.__read_file(url)
 
@@ -116,7 +79,7 @@ def send_mail(content: str, mail_config: dict):
     receivers = mail_config['receivers']  # 接收邮件，可设置为你的QQ邮箱或者其他邮箱
 
     message = MIMEText(content, 'html', 'utf-8')
-    message['From'] = "电费查询"+'<'+str(sender)+'>'
+    message['From'] = "电费查询" + '<' + str(sender) + '>'
     message['To'] = ",".join(receivers)
 
     subject = '电费不够啦！'
@@ -124,7 +87,7 @@ def send_mail(content: str, mail_config: dict):
 
     try:
         smtpObj = smtplib.SMTP()
-        smtpObj.connect(mail_host, mail_config['port'])    # 25 为 SMTP 端口号
+        smtpObj.connect(mail_host, mail_config['port'])  # 25 为 SMTP 端口号
         smtpObj.login(mail_user, mail_pass)
         smtpObj.sendmail(sender, receivers, message.as_string())
         print("邮件发送成功")
@@ -133,29 +96,84 @@ def send_mail(content: str, mail_config: dict):
         print(e)
 
 
-def get_power_info(url='settings.json'):
-    p = properties(url=url).content
-    ret = login(p['username'], p['password'])
-    s = getHeader(ret.headers)
-    q = Query(s).part(p["areaid"], p['partmentName']).floor(
-        p['floor']).dorm(p['dorm']).search()
-    content = ''
-    if q[0]:
-        d = q[-1]
-        for k in ['time', 'surplus', 'phone', 'freeEnd']:
-            content += '{:>12}{}\n'.format(k+': ', d[k])
-        print(content)
+def get_power_info(session, props):
+    pass
+
+
+def login(session, username: str, password: str):
+    """
+    login
+    """
+    resp = session.get("https://auth.bupt.edu.cn/authserver/login",
+                       data={
+                           "username": username,
+                           "password": password,
+                       })
+
+    result = re.findall(
+        r'<input name="execution" value="([a-zA-Z0-9\-=+/_]+)"/>', resp.text)
+    if len(result) > 0:
+        execution = result[0]
     else:
-        d = {'surplus': 30}  # 这里挺蠢的，其实只要大于20就好了，这个30随意定的
-        print('failed to fetch')
-    return d, content
+        execution = ""
+
+    resp = session.post("https://auth.bupt.edu.cn/authserver/login",
+                        data={
+                            "username": username,
+                            "password": password,
+                            "submit": "登录",
+                            "type": "username_password",
+                            "execution": execution,
+                            "_eventId": "submit",
+                        })
+
+    return True
+    if resp.json()["e"] == 0:
+        return True
+    else:
+        print(resp.text)
+        return False
 
 
 def main(url='settings.json'):
-    p = properties(url=url).content
-    d, c = get_power_info(url)
-    if d['surplus'] < 10:
-        send_mail(c, p['mail'])
+    props = properties(url=url).content
+    session = requests.Session()
+
+    isLoginSuccess = login(session, props["username"], props["password"])
+    if isLoginSuccess:
+        print(props["username"], "login success")
+    else:
+        print(props["username"], "login failed")
+        return
+
+    session.get('https://app.bupt.edu.cn/buptdf/wap/default/chong')
+    partmentReq = session.post(
+        'https://app.bupt.edu.cn/buptdf/wap/default/part',
+        data={"areaid": props['areaid']})
+    ret = list(
+        filter(lambda x: x['partmentName'] == props['partmentName'],
+               partmentReq.json()['d']['data']))
+    if len(ret) == 0:
+        print('partmentName error')
+        return
+    partmentId = ret[0]['partmentId']
+    print(partmentId)
+
+    ret = session.post('https://app.bupt.edu.cn/buptdf/wap/default/search',
+                       data={
+                           "areaid": props['areaid'],
+                           'partmentId': partmentId,
+                           'floorId': props['floorId'],
+                           'dromNumber': props['dorm']
+                       })
+    if ret.json()['e'] != 0:
+        print(ret.json()['m'])
+        return
+
+    print(ret.json()['d']['data'])
+    data = ret.json()['d']['data']
+
+    print('剩余电量：', data['surplus'])
 
 
 if __name__ == '__main__':
