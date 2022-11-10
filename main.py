@@ -208,7 +208,7 @@ def main(url='settings.json'):
     # data = ret.json()['d']['data']
     data = getInfo(url)
 
-    print('剩余电量：', data['surplus'])
+    print(data['surplus'])
 
 
 if __name__ == '__main__':
