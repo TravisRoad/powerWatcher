@@ -35,5 +35,7 @@ jobs:
         run: |
           python main.py settings.json > out
           # ddl=$(expr $(date -d "Dec 25 2021" +%j) - $(date +%j))
-          curl -k -d chat_id="$id" -d "text=$(cat out)" https://api.telegram.org/bot$sk/sendMessage
+          if [[ $(tail -1 out | cut -d" " -f2 ) -lt 10 ]]; then
+            curl -k -d chat_id="$id" -d "text=$(cat out)" https://api.telegram.org/bot$sk/sendMessage
+          fi
           # curl -k -d chat_id="$id" -d "text=还有$ddl天💀" https://api.telegram.org/bot$sk/sendMessage

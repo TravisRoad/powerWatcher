@@ -134,18 +134,15 @@ def login(session, username: str, password: str):
         print(resp.text)
         return False
 
-
-def main(url='settings.json'):
+def getInfo(url='settings.json'):
     props = properties(url=url).content
     session = requests.Session()
 
     isLoginSuccess = login(session, props["username"], props["password"])
     if isLoginSuccess:
         pass
-        # print(props["username"], "login success")
     else:
-        # print(props["username"], "login failed")
-        return
+        return {}
 
     session.get('https://app.bupt.edu.cn/buptdf/wap/default/chong')
     partmentReq = session.post(
@@ -156,9 +153,8 @@ def main(url='settings.json'):
                partmentReq.json()['d']['data']))
     if len(ret) == 0:
         print('partmentName error')
-        return
+        return {}
     partmentId = ret[0]['partmentId']
-    # print(partmentId)
 
     ret = session.post('https://app.bupt.edu.cn/buptdf/wap/default/search',
                        data={
@@ -170,9 +166,47 @@ def main(url='settings.json'):
     if ret.json()['e'] != 0:
         print(ret.json()['m'])
         return
+    return ret.json()['d']['data']
 
-    print(ret.json()['d']['data'])
-    data = ret.json()['d']['data']
+def main(url='settings.json'):
+    # props = properties(url=url).content
+    # session = requests.Session()
+
+    # isLoginSuccess = login(session, props["username"], props["password"])
+    # if isLoginSuccess:
+    #     pass
+    #     # print(props["username"], "login success")
+    # else:
+    #     # print(props["username"], "login failed")
+    #     return
+
+    # session.get('https://app.bupt.edu.cn/buptdf/wap/default/chong')
+    # partmentReq = session.post(
+    #     'https://app.bupt.edu.cn/buptdf/wap/default/part',
+    #     data={"areaid": props['areaid']})
+    # ret = list(
+    #     filter(lambda x: x['partmentName'] == props['partmentName'],
+    #            partmentReq.json()['d']['data']))
+    # if len(ret) == 0:
+    #     print('partmentName error')
+    #     return
+    # partmentId = ret[0]['partmentId']
+    # # print(partmentId)
+
+    # ret = session.post('https://app.bupt.edu.cn/buptdf/wap/default/search',
+    #                    data={
+    #                        "areaid": props['areaid'],
+    #                        'partmentId': partmentId,
+    #                        'floorId': props['floorId'],
+    #                        'dromNumber': props['dorm']
+    #                    })
+    # if ret.json()['e'] != 0:
+    #     print(ret.json()['m'])
+    #     return
+
+    # print(ret.json()['d']['data'])
+    # data = ret.json()['d']['data']
+    data = getInfo(url)
 
     print('剩余电量：', data['surplus'])
 
